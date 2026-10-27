@@ -12,6 +12,8 @@ spring:
     hikari:
       connection-timeout: 10000
       maximum-pool-size: 10
+      data-source-properties:
+        oracle.jdbc.timezoneAsRegion: false
   jpa:
     open-in-view: false
     hibernate:
@@ -25,6 +27,12 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     placeholder-replacement: false
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: car-shop
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:480}
 
 logging:
   level:

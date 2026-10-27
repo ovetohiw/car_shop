@@ -8,7 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @Entity
 @Table(name = "users")
@@ -29,9 +30,18 @@ public class UserAccount {
   private Role role;
 
   @Column(name = "created_at", nullable = false)
-  private Instant createdAt;
+  private LocalDateTime createdAt;
 
   protected UserAccount() {
+  }
+
+  public static UserAccount createCustomer(String email, String passwordHash) {
+    UserAccount user = new UserAccount();
+    user.email = email;
+    user.passwordHash = passwordHash;
+    user.role = Role.CUSTOMER;
+    user.createdAt = LocalDateTime.now(ZoneOffset.UTC);
+    return user;
   }
 
   public Long getId() {
@@ -50,7 +60,7 @@ public class UserAccount {
     return role;
   }
 
-  public Instant getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 }

@@ -13,7 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -35,10 +35,10 @@ public class ShopOrder {
   private BigDecimal totalAmount;
 
   @Column(name = "created_at", nullable = false)
-  private Instant createdAt;
+  private LocalDateTime createdAt;
 
   @Column(name = "updated_at", nullable = false)
-  private Instant updatedAt;
+  private LocalDateTime updatedAt;
 
   protected ShopOrder() {
   }
@@ -59,11 +59,11 @@ public class ShopOrder {
     return totalAmount;
   }
 
-  public Instant getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Instant getUpdatedAt() {
+  public LocalDateTime getUpdatedAt() {
     return updatedAt;
   }
 }

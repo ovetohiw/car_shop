@@ -11,6 +11,8 @@
 
 Демо staff (после сидов): `staff@carshop.local` / `StaffDemo1!` — только для локального стенда.
 
+Auth API: `POST /api/auth/register`, `POST /api/auth/login` → JWT (`Authorization: Bearer …`). Staff probe: `GET /api/staff/ping`.
+
 Подробности: [STACK.md](STACK.md), ТЗ: [FEATURE.md](FEATURE.md).
 
 ## Быстрый старт

@@ -21,7 +21,7 @@
 |--------|-------|-------------|-----------------|---------------|----------|-------------|
 | Инфраструктура стенда (Compose) | B | docker compose + health OK | хорошая | smoke backend/frontend | cold start Oracle; pnpm age bypass в Docker | 2026-10-28 |
 | Каталог авто / запчасти | C | сиды в БД | хорошая | нет API-тестов каталога | REST каталога ещё нет (этап 4) | 2026-10-28 |
-| Auth JWT | D | нет | — | нет | не реализовано (этап 3) | 2026-10-28 |
+| Auth JWT | B | IT + curl 401/403 | хорошая | AuthIntegrationTest | нет refresh/denylist; UI token storage later | 2026-10-28 |
 | Конфигуратор / заказы | D | схема orders есть | — | нет | логика заказа не реализована (этап 5–6) | 2026-10-28 |
 | UI кабинеты | D | нет | — | нет | только placeholder SPA (этап 7) | 2026-10-28 |
 
@@ -30,10 +30,18 @@
 | Слой | Оценка | Соблюдение границ | Читаемость для агента | Ключевые пробелы | Последнее обновление |
 |-------|-------|---------------------|-----------------|----------|-------------|
 | Frontend (React SPA) | C | каркас + static images | хорошая | нет роутов/каталога/auth UI | 2026-10-28 |
-| Backend (Spring Boot) | B | health / catalog / order / user пакеты | хорошая | нет Security/REST каталога | 2026-10-28 |
+| Backend (Spring Boot) | B | health / auth / catalog / order пакеты | хорошая | нет REST каталога | 2026-10-28 |
 | Persistence (Oracle) | B | Flyway + validate | хорошая | нет интеграционных тестов с Testcontainers | 2026-10-28 |
 
 ## История изменений
+
+### 2026-10-28 (этап 3)
+
+- Изменения: JWT auth register/login, staff authorization
+- Повышенные домены: Auth JWT → B
+- Понижены: —
+- Новые выявленные пробелы: REST каталога; UI auth
+- Закрытые пробелы: отсутствие server-side auth
 
 ### 2026-10-28 (этап 2)
 

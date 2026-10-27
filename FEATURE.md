@@ -126,6 +126,8 @@
 - Образ Oracle: `gvenzl/oracle-xe:21-slim-faststart` (тяжёлый; cold start долгий; healthcheck + `depends_on` в compose).
 - Backend: Maven (`./mvnw`); миграции: **Flyway**.
 - Демо staff: `staff@carshop.local` / `StaffDemo1!` (только локальный стенд; см. `.env.example`).
+- JWT: HS256, TTL через `JWT_EXPIRATION_MINUTES` (по умолчанию 480); отзыв в MVP = дождаться expiry (без refresh/denylist).
+- Хранение токена на фронте — решение на этапе UI (не localStorage без явной записи в план).
 - Большой скоуп одной MVP-фичи; дробить только после DoD или явной смены статуса.
 - Секреты БД и JWT — только `.env` / compose env + `.env.example`, не в этом файле.
 

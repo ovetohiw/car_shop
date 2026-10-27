@@ -16,7 +16,7 @@
 ## Тест работоспособности приложения
 
 - Поднять приложение: `docker compose up --build` (UI http://localhost:8080, API http://localhost:8081, Oracle :1521).
-- Прогнать тесты: backend — `cd backend && ./mvnw test`; frontend — `cd frontend && pnpm test` и `cd frontend && pnpm test:e2e`.
+- Прогнать тесты: backend — `cd backend && ./mvnw test` (auth IT требуют Oracle на localhost:1521 из compose); frontend — `cd frontend && pnpm test` и `cd frontend && pnpm test:e2e`.
 - Верификация: `docker compose ps` (сервисы healthy) && `curl http://localhost:8081/api/health` && прогон тестов выше.
 
 ## Definition of Done
