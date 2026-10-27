@@ -159,4 +159,33 @@ export function register(email: string, password: string) {
   })
 }
 
+export type OrderSummary = {
+  id: number
+  status: string
+  totalAmount: number
+  createdAt: string
+  updatedAt: string
+  customerEmail: string
+}
+
+export function fetchMyOrders(token: string) {
+  return requestJson<OrderSummary[]>('/api/orders/mine', { token })
+}
+
+export function fetchStaffOrders(token: string) {
+  return requestJson<OrderSummary[]>('/api/staff/orders', { token })
+}
+
+export function updateStaffOrderStatus(
+  token: string,
+  orderId: number,
+  status: string,
+) {
+  return requestJson<OrderSummary>(`/api/staff/orders/${orderId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+    token,
+  })
+}
+
 export type { AuthHeaders }

@@ -56,6 +56,32 @@ public class OrderService {
     return toResponse(order, null);
   }
 
+  @Transactional(readOnly = true)
+  public List<OrderSummaryResponse> listMine(Long userId) {
+    return shopOrderRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
+        .map(OrderSummaryResponse::from)
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<OrderSummaryResponse> listAllForStaff() {
+    return shopOrderRepository.findAllByOrderByCreatedAtDesc().stream()
+        .map(OrderSummaryResponse::from)
+        .toList();
+  }
+
+  @Transactional
+  public OrderSummaryResponse updateStatusForStaff(Long orderId, OrderStatus nextStatus) {
+    ShopOrder order = shopOrderRepository.findById(orderId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+    try {
+      order.transitionTo(nextStatus);
+    } catch (IllegalStateException ex) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+    return OrderSummaryResponse.from(order);
+  }
+
   private static OrderItem toOrderItem(PricedLine line) {
     if (line.itemType() == OrderItemType.CAR) {
       OrderItem item = OrderItem.carLine(

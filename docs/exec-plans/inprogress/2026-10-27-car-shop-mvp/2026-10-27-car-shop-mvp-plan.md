@@ -56,7 +56,7 @@
 
 ## Текущий шаг
 
-Этап 6: кабинеты customer/staff и смена статусов эмуляции исполнения.
+Этап 7: Frontend UI на :8080 (полировка страниц каталога/auth/кабинетов).
 
 ## Лог прогресса
 
@@ -66,3 +66,4 @@
 - 2026-10-28: Этап 3 **готов** — JWT register/login; staff ping 200 / anon 401 / customer 403; `./mvnw test` зелёный (AuthIntegrationTest + JwtServiceTest).
 - 2026-10-28: Этап 4 **готов** — публичный REST каталога; UI рендерит cars/parts; nginx proxy `/api`; CatalogIntegrationTest зелёный.
 - 2026-10-28: Этап 5 **готов** — quote/create order; PriceCalculator unit; claimedTotal mismatch 400; UI configurator server total.
+- 2026-10-28: Этап 6 **готов** — mine/staff lists + status PATCH; StaffCabinet IT; UI вкладки My orders / Staff.

@@ -67,6 +67,15 @@ public class ShopOrder {
     item.setOrder(this);
   }
 
+  public void transitionTo(OrderStatus nextStatus) {
+    if (!OrderStatusTransitions.canTransition(status, nextStatus)) {
+      throw new IllegalStateException(
+          "Cannot transition from " + status + " to " + nextStatus);
+    }
+    this.status = nextStatus;
+    this.updatedAt = LocalDateTime.now(ZoneOffset.UTC);
+  }
+
   public Long getId() {
     return id;
   }

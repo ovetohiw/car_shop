@@ -22,18 +22,26 @@
 | Инфраструктура стенда (Compose) | B | docker compose + health OK | хорошая | smoke backend/frontend | cold start Oracle; pnpm age bypass в Docker | 2026-10-28 |
 | Каталог авто / запчасти | B | API + UI + IT | хорошая | CatalogIntegrationTest | нет фильтров/пагинации UI | 2026-10-28 |
 | Auth JWT | B | IT + curl 401/403 | хорошая | AuthIntegrationTest | нет refresh/denylist; UI token storage later | 2026-10-28 |
-| Конфигуратор / заказы | B | quote/create IT | хорошая | PriceCalculator + OrderIT | кабинеты/статусы ещё этап 6 | 2026-10-28 |
-| UI кабинеты | D | нет | — | нет | только placeholder SPA (этап 7) | 2026-10-28 |
+| Конфигуратор / заказы | B | quote/create + cabinet IT | хорошая | PriceCalculator + Order/Staff IT | UI сырой (этап 7) | 2026-10-28 |
+| UI кабинеты | C | API + базовый UI | средняя | StaffCabinetIntegrationTest | нет e2e; UX/полировка этап 7 | 2026-10-28 |
 
 ## Архитектурные слои
 
 | Слой | Оценка | Соблюдение границ | Читаемость для агента | Ключевые пробелы | Последнее обновление |
 |-------|-------|---------------------|-----------------|----------|-------------|
-| Frontend (React SPA) | B | каталог через API | хорошая | нет auth UI / конфигуратора | 2026-10-28 |
-| Backend (Spring Boot) | B | health / auth / catalog REST | хорошая | нет order create API | 2026-10-28 |
+| Frontend (React SPA) | B | каталог/конфиг/кабинеты | хорошая | полировка UX этап 7; нет e2e | 2026-10-28 |
+| Backend (Spring Boot) | B | health / auth / catalog / orders / staff | хорошая | нет Testcontainers | 2026-10-28 |
 | Persistence (Oracle) | B | Flyway + validate | хорошая | нет интеграционных тестов с Testcontainers | 2026-10-28 |
 
 ## История изменений
+
+### 2026-10-28 (этап 6)
+
+- Изменения: customer/staff order lists, status transitions, UI cabinets
+- Повышенные домены: UI кабинеты → C; Конфигуратор / заказы (закрыт gap статусов)
+- Понижены: —
+- Новые выявленные пробелы: полировка UI / e2e (этап 7–8)
+- Закрытые пробелы: отсутствие staff/customer cabinets API
 
 ### 2026-10-28 (этап 5)
 

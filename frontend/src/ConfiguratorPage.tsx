@@ -11,10 +11,9 @@ import {
   fetchColors,
   fetchExtraServices,
   fetchParts,
-  login,
   quoteOrder,
-  register,
 } from './api'
+import type { AuthSession } from './authTypes'
 
 function formatMoney(value: number) {
   return new Intl.NumberFormat('en-US', {
@@ -23,7 +22,11 @@ function formatMoney(value: number) {
   }).format(value)
 }
 
-export function ConfiguratorPage() {
+type Props = {
+  session: AuthSession | null
+}
+
+export function ConfiguratorPage({ session }: Props) {
   const [cars, setCars] = useState<CarSummary[]>([])
   const [carDetail, setCarDetail] = useState<CarDetail | null>(null)
   const [colors, setColors] = useState<ColorOption[]>([])
@@ -37,9 +40,6 @@ export function ConfiguratorPage() {
   const [partId, setPartId] = useState<number | ''>('')
   const [partQty, setPartQty] = useState(1)
 
-  const [token, setToken] = useState<string | null>(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [serverTotal, setServerTotal] = useState<number | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -122,27 +122,13 @@ export function ConfiguratorPage() {
     )
   }
 
-  async function onAuth(mode: 'login' | 'register') {
-    try {
-      const result =
-        mode === 'login'
-          ? await login(email, password)
-          : await register(email, password)
-      setToken(result.accessToken)
-      setMessage(`Signed in as ${result.email}`)
-      setError(null)
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Auth failed')
-    }
-  }
-
   async function onPlaceOrder() {
-    if (!orderBody || !token) {
+    if (!orderBody || !session) {
       setError('Sign in to place an order')
       return
     }
     try {
-      const order = await createOrder(orderBody, token)
+      const order = await createOrder(orderBody, session.token)
       setMessage(`Order #${order.id} created for ${formatMoney(Number(order.totalAmount))}`)
       setError(null)
     } catch (err: unknown) {
@@ -249,40 +235,10 @@ export function ConfiguratorPage() {
         </p>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-[1fr_1fr_auto_auto]">
-        <input
-          className="rounded border border-slate-300 px-3 py-2"
-          placeholder="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
-        <input
-          className="rounded border border-slate-300 px-3 py-2"
-          placeholder="password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
-        <button
-          type="button"
-          className="rounded bg-slate-900 px-4 py-2 text-white"
-          onClick={() => void onAuth('login')}
-        >
-          Sign in
-        </button>
-        <button
-          type="button"
-          className="rounded bg-slate-700 px-4 py-2 text-white"
-          onClick={() => void onAuth('register')}
-        >
-          Register
-        </button>
-      </section>
-
       <button
         type="button"
         className="rounded bg-sky-700 px-5 py-3 font-medium text-white disabled:opacity-50"
-        disabled={!token || serverTotal == null}
+        disabled={!session || serverTotal == null}
         onClick={() => void onPlaceOrder()}
       >
         Place order

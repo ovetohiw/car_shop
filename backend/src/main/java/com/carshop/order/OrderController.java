@@ -35,6 +35,12 @@ public class OrderController {
     return orderService.create(principal.getUserId(), request);
   }
 
+  @GetMapping("/mine")
+  public java.util.List<OrderSummaryResponse> listMine(
+      @AuthenticationPrincipal UserAccountDetails principal) {
+    return orderService.listMine(principal.getUserId());
+  }
+
   @GetMapping("/{id}")
   public OrderResponse getOwned(
       @AuthenticationPrincipal UserAccountDetails principal,
