@@ -1,9 +1,35 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? ''
 
-async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`)
+type AuthHeaders = { Authorization?: string }
+
+async function requestJson<T>(
+  path: string,
+  init?: RequestInit & { token?: string },
+): Promise<T> {
+  const headers: Record<string, string> = {
+    ...(init?.headers as Record<string, string> | undefined),
+  }
+  if (init?.body && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json'
+  }
+  if (init?.token) {
+    headers.Authorization = `Bearer ${init.token}`
+  }
+  const response = await fetch(`${API_BASE}${path}`, { ...init, headers })
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status}`)
+    let message = `Request failed: ${response.status}`
+    try {
+      const body = (await response.json()) as { error?: string }
+      if (body.error) {
+        message = body.error
+      }
+    } catch {
+      // keep status message
+    }
+    throw new Error(message)
+  }
+  if (response.status === 204) {
+    return undefined as T
   }
   return response.json() as Promise<T>
 }
@@ -36,14 +62,101 @@ export type Part = {
   stockQty: number
 }
 
+export type ColorOption = {
+  id: number
+  code: string
+  name: string
+  hexCode: string
+  priceDelta: number
+}
+
+export type ExtraService = {
+  id: number
+  code: string
+  name: string
+  price: number
+}
+
+export type QuoteResponse = {
+  totalAmount: number
+  lines: Array<{
+    itemType: string
+    description: string
+    quantity: number
+    unitPrice: number
+    lineTotal: number
+  }>
+}
+
+export type AuthResponse = {
+  accessToken: string
+  tokenType: string
+  expiresInSeconds: number
+  email: string
+  role: string
+}
+
+export type OrderRequest = {
+  car?: {
+    carModelId: number
+    trimId: number
+    colorId: number
+    extraServiceIds: number[]
+  }
+  parts?: Array<{ partId: number; quantity: number }>
+  claimedTotal?: number
+}
+
 export function fetchCars() {
-  return getJson<CarSummary[]>('/api/cars')
+  return requestJson<CarSummary[]>('/api/cars')
 }
 
 export function fetchCar(id: number) {
-  return getJson<CarDetail>(`/api/cars/${id}`)
+  return requestJson<CarDetail>(`/api/cars/${id}`)
 }
 
 export function fetchParts() {
-  return getJson<Part[]>('/api/parts')
+  return requestJson<Part[]>('/api/parts')
 }
+
+export function fetchColors() {
+  return requestJson<ColorOption[]>('/api/colors')
+}
+
+export function fetchExtraServices() {
+  return requestJson<ExtraService[]>('/api/extra-services')
+}
+
+export function quoteOrder(body: OrderRequest) {
+  return requestJson<QuoteResponse>('/api/orders/quote', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+}
+
+export function createOrder(body: OrderRequest, token: string) {
+  return requestJson<{ id: number; totalAmount: number; status: string }>(
+    '/api/orders',
+    {
+      method: 'POST',
+      body: JSON.stringify(body),
+      token,
+    },
+  )
+}
+
+export function login(email: string, password: string) {
+  return requestJson<AuthResponse>('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  })
+}
+
+export function register(email: string, password: string) {
+  return requestJson<AuthResponse>('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  })
+}
+
+export type { AuthHeaders }

@@ -22,7 +22,7 @@
 | Инфраструктура стенда (Compose) | B | docker compose + health OK | хорошая | smoke backend/frontend | cold start Oracle; pnpm age bypass в Docker | 2026-10-28 |
 | Каталог авто / запчасти | B | API + UI + IT | хорошая | CatalogIntegrationTest | нет фильтров/пагинации UI | 2026-10-28 |
 | Auth JWT | B | IT + curl 401/403 | хорошая | AuthIntegrationTest | нет refresh/denylist; UI token storage later | 2026-10-28 |
-| Конфигуратор / заказы | D | схема orders есть | — | нет | логика заказа не реализована (этап 5–6) | 2026-10-28 |
+| Конфигуратор / заказы | B | quote/create IT | хорошая | PriceCalculator + OrderIT | кабинеты/статусы ещё этап 6 | 2026-10-28 |
 | UI кабинеты | D | нет | — | нет | только placeholder SPA (этап 7) | 2026-10-28 |
 
 ## Архитектурные слои
@@ -34,6 +34,14 @@
 | Persistence (Oracle) | B | Flyway + validate | хорошая | нет интеграционных тестов с Testcontainers | 2026-10-28 |
 
 ## История изменений
+
+### 2026-10-28 (этап 5)
+
+- Изменения: серверный расчёт цены, quote/create order, UI configurator
+- Повышенные домены: Конфигуратор / заказы → B
+- Понижены: —
+- Новые выявленные пробелы: staff/customer cabinets
+- Закрытые пробелы: отсутствие order create / price engine
 
 ### 2026-10-28 (этап 4)
 

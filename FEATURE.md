@@ -127,7 +127,7 @@
 - Backend: Maven (`./mvnw`); миграции: **Flyway**.
 - Демо staff: `staff@carshop.local` / `StaffDemo1!` (только локальный стенд; см. `.env.example`).
 - JWT: HS256, TTL через `JWT_EXPIRATION_MINUTES` (по умолчанию 480); отзыв в MVP = дождаться expiry (без refresh/denylist).
-- Хранение токена на фронте — решение на этапе UI (не localStorage без явной записи в план).
+- Хранение JWT на фронте (этап 5+): **in-memory React state** (теряется при refresh); не localStorage.
 - Большой скоуп одной MVP-фичи; дробить только после DoD или явной смены статуса.
 - Секреты БД и JWT — только `.env` / compose env + `.env.example`, не в этом файле.
 

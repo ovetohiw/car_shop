@@ -13,7 +13,11 @@
 
 Auth API: `POST /api/auth/register`, `POST /api/auth/login` → JWT (`Authorization: Bearer …`). Staff probe: `GET /api/staff/ping`.
 
-Catalog API (public): `GET /api/cars`, `GET /api/cars/{id}`, `GET /api/parts`, `GET /api/parts/{id}`. UI on :8080 proxies `/api` to backend.
+Catalog API (public): `GET /api/cars`, `GET /api/cars/{id}`, `GET /api/parts`, `GET /api/parts/{id}`, `GET /api/colors`, `GET /api/extra-services`.
+
+Orders: `POST /api/orders/quote` (public), `POST /api/orders` (JWT), `GET /api/orders/{id}` (owner). Totals are server-side only; mismatched `claimedTotal` → 400.
+
+UI on :8080 proxies `/api` to backend (Catalog + Configurator tabs).
 
 Подробности: [STACK.md](STACK.md), ТЗ: [FEATURE.md](FEATURE.md).
 

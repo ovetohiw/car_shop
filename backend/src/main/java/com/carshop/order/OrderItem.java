@@ -2,8 +2,10 @@ package com.carshop.order;
 
 import com.carshop.catalog.CarModel;
 import com.carshop.catalog.ColorOption;
+import com.carshop.catalog.ExtraService;
 import com.carshop.catalog.Part;
 import com.carshop.catalog.Trim;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,8 +16,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "order_items")
@@ -61,7 +66,48 @@ public class OrderItem {
   @Column(name = "description_snapshot", nullable = false, length = 1000)
   private String descriptionSnapshot;
 
+  @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<OrderItemExtra> extras = new ArrayList<>();
+
   protected OrderItem() {
+  }
+
+  public static OrderItem carLine(
+      CarModel carModel,
+      Trim trim,
+      ColorOption color,
+      BigDecimal unitPrice,
+      String descriptionSnapshot) {
+    OrderItem item = new OrderItem();
+    item.itemType = OrderItemType.CAR;
+    item.carModel = carModel;
+    item.trim = trim;
+    item.color = color;
+    item.quantity = 1;
+    item.unitPrice = unitPrice;
+    item.lineTotal = unitPrice;
+    item.descriptionSnapshot = descriptionSnapshot;
+    return item;
+  }
+
+  public static OrderItem partLine(Part part, int quantity, BigDecimal unitPrice, BigDecimal lineTotal) {
+    OrderItem item = new OrderItem();
+    item.itemType = OrderItemType.PART;
+    item.part = part;
+    item.quantity = quantity;
+    item.unitPrice = unitPrice;
+    item.lineTotal = lineTotal;
+    item.descriptionSnapshot = part.getName() + " x" + quantity;
+    return item;
+  }
+
+  void setOrder(ShopOrder order) {
+    this.order = order;
+  }
+
+  public void addExtra(ExtraService extraService, BigDecimal price) {
+    OrderItemExtra link = OrderItemExtra.create(this, extraService, price);
+    extras.add(link);
   }
 
   public Long getId() {
@@ -106,5 +152,9 @@ public class OrderItem {
 
   public String getDescriptionSnapshot() {
     return descriptionSnapshot;
+  }
+
+  public List<OrderItemExtra> getExtras() {
+    return extras;
   }
 }

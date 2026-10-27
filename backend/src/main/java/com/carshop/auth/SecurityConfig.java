@@ -55,7 +55,9 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/health").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/cars/**", "/api/parts/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cars/**", "/api/parts/**", "/api/colors", "/api/extra-services")
+                .permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/orders/quote").permitAll()
             .requestMatchers("/api/staff/**").hasRole("STAFF")
             .anyRequest().authenticated())
         .exceptionHandling(ex -> ex

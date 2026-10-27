@@ -34,6 +34,14 @@ public class OrderItemExtra {
   protected OrderItemExtra() {
   }
 
+  public static OrderItemExtra create(OrderItem orderItem, ExtraService extraService, BigDecimal price) {
+    OrderItemExtra link = new OrderItemExtra();
+    link.orderItem = orderItem;
+    link.extraService = extraService;
+    link.price = price;
+    return link;
+  }
+
   public OrderItem getOrderItem() {
     return orderItem;
   }
