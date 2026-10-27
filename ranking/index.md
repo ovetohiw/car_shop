@@ -23,17 +23,25 @@
 | Каталог авто / запчасти | B | API + UI + IT | хорошая | CatalogIntegrationTest | нет фильтров/пагинации UI | 2026-10-28 |
 | Auth JWT | B | IT + curl 401/403 | хорошая | AuthIntegrationTest | нет refresh/denylist; UI token storage later | 2026-10-28 |
 | Конфигуратор / заказы | B | quote/create + cabinet IT | хорошая | PriceCalculator + Order/Staff IT | UI сырой (этап 7) | 2026-10-28 |
-| UI кабинеты | B | API + routed UI | хорошая | StaffCabinet IT + smoke e2e | полный заказ e2e — этап 8 | 2026-10-28 |
+| UI кабинеты | A | API + MVP e2e | хорошая | StaffCabinet IT + mvp e2e | JWT in-memory | 2026-10-28 |
 
 ## Архитектурные слои
 
 | Слой | Оценка | Соблюдение границ | Читаемость для агента | Ключевые пробелы | Последнее обновление |
 |-------|-------|---------------------|-----------------|----------|-------------|
-| Frontend (React SPA) | B | routed pages + API proxy | хорошая | полный happy-path e2e — этап 8 | 2026-10-28 |
-| Backend (Spring Boot) | B | health / auth / catalog / orders / staff | хорошая | нет Testcontainers | 2026-10-28 |
+| Frontend (React SPA) | A | routed pages + MVP e2e | хорошая | JWT in-memory only | 2026-10-28 |
+| Backend (Spring Boot) | A | health / auth / catalog / orders / staff | хорошая | нет Testcontainers | 2026-10-28 |
 | Persistence (Oracle) | B | Flyway + validate | хорошая | нет интеграционных тестов с Testcontainers | 2026-10-28 |
 
 ## История изменений
+
+### 2026-10-28 (этап 8)
+
+- Изменения: MVP Playwright e2e, DoD в FEATURE, F-001 готово, план в completed/
+- Повышенные домены: UI кабинеты → A; Frontend → A; Backend → A
+- Понижены: —
+- Новые выявленные пробелы: следующая фича ещё не выбрана
+- Закрытые пробелы: отсутствие DoD/сквозного happy-path e2e
 
 ### 2026-10-28 (этап 7)
 

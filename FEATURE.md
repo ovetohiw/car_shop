@@ -23,9 +23,9 @@
 - ID: F-001
 - Название: MVP онлайн-магазина автомобилей и запчастей
 - Приоритет: P0
-- Статус: в работе
+- Статус: готово
 - Дата: 2026-10-27
-- Exec plan: docs/exec-plans/inprogress/2026-10-27-car-shop-mvp/2026-10-27-car-shop-mvp-plan.md
+- Exec plan: docs/exec-plans/completed/2026-10-27-car-shop-mvp/2026-10-27-car-shop-mvp-plan.md
 
 ### Проблема и цель
 
@@ -81,25 +81,25 @@
 
 Фича «готово» только когда каждый пункт отмечен и есть доказательства ниже.
 
-- [ ] `docker compose up --build` поднимает frontend на 8080, backend на 8081, Oracle на 1521
-- [ ] Гость видит каталог автомобилей с изображениями и раздел запчастей
-- [ ] Регистрация, вход и выход работают; без auth заказ недоступен
-- [ ] Конфигуратор (модель, комплектация, цвет, доп. услуги) показывает корректный серверный итог
-- [ ] Созданный заказ виден покупателю в «Мои заказы» и staff во «Все заказы»
-- [ ] Staff переводит заказ по статусам эмуляции исполнения
-- [ ] Не-staff получает отказ на staff-API/страницы
-- [ ] Подмена цены с клиента не принимается
-- [ ] Health-check backend (`GET /api/health`) успешен
+- [x] `docker compose up --build` поднимает frontend на 8080, backend на 8081, Oracle на 1521
+- [x] Гость видит каталог автомобилей с изображениями и раздел запчастей
+- [x] Регистрация, вход и выход работают; без auth заказ недоступен
+- [x] Конфигуратор (модель, комплектация, цвет, доп. услуги) показывает корректный серверный итог
+- [x] Созданный заказ виден покупателю в «Мои заказы» и staff во «Все заказы»
+- [x] Staff переводит заказ по статусам эмуляции исполнения
+- [x] Не-staff получает отказ на staff-API/страницы
+- [x] Подмена цены с клиента не принимается
+- [x] Health-check backend (`GET /api/health`) успешен
 
 ### Верификация
 
 Отметьте обязательные уровни. Команды — из AGENTS.md, не выдумывайте раннер.
 
-- [ ] Unit
-- [ ] Интеграция
-- [ ] Сквозной путь
-- [ ] Health-check
-- [ ] Базовая верификация из AGENTS.md зелёная
+- [x] Unit
+- [x] Интеграция
+- [x] Сквозной путь
+- [x] Health-check
+- [x] Базовая верификация из AGENTS.md зелёная
 
 Команды:
 
@@ -133,17 +133,21 @@
 
 ### Доказательства DoD
 
-Пустой блок значит, что фича не готова. Definition of Done — в AGENTS.md.
+Definition of Done — в AGENTS.md. Прогон 2026-10-28.
 
-- Фича реализована:
-- Сквозные тесты:
-- Ошибки:
-- Health-check:
+- Фича реализована: Compose стенд; JWT customer/staff; каталог и parts; quote/create orders; кабинеты; UI routes на :8080.
+- Сквозные тесты: `frontend/e2e/mvp.spec.ts` (register → order → my orders → staff status flow) + `smoke.spec.ts`; backend StaffCabinetIntegrationTest / OrderIntegrationTest / AuthIntegrationTest.
+- Ошибки: claimedTotal mismatch → 400 (OrderIT); customer на `/api/staff/**` → 403 (StaffCabinet IT); Place order disabled без auth (e2e).
+- Health-check: `GET http://localhost:8081/api/health` → `{"status":"UP"}`; Oracle container healthy.
 - Что прогнано и результат:
-- Где лежит артефакт:
+  - `docker compose ps` — frontend/backend/oracle up; oracle healthy
+  - `backend ./mvnw test` — Tests run: 14, Failures: 0, BUILD SUCCESS
+  - `frontend pnpm test` — 2 passed
+  - `frontend pnpm test:e2e` — 3 passed
+- Где лежит артефакт: код в `frontend/` + `backend/`; план в `docs/exec-plans/completed/2026-10-27-car-shop-mvp/`; этот блок.
 
 ## Лог завершённых
 
 Краткая запись прошлых фич. Активное ТЗ живёт только в секции «Текущая фича».
 
-- 
+- (перенести F-001 сюда перед стартом следующей фичи)

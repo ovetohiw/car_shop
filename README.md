@@ -48,4 +48,4 @@ cd frontend && pnpm test:e2e
 
 - `frontend/` — React SPA
 - `backend/` — Spring Boot REST
-- `docs/exec-plans/inprogress/2026-10-27-car-shop-mvp/` — план F-001
+- `docs/exec-plans/completed/2026-10-27-car-shop-mvp/` — завершённый план F-001

@@ -56,7 +56,7 @@
 
 ## Текущий шаг
 
-Этап 8: health-check, тесты, доказательства DoD; статус F-001 → `готово`.
+План **завершён**. F-001 → `готово`. Архив: `docs/exec-plans/completed/2026-10-27-car-shop-mvp/`.
 
 ## Лог прогресса
 
@@ -68,3 +68,4 @@
 - 2026-10-28: Этап 5 **готов** — quote/create order; PriceCalculator unit; claimedTotal mismatch 400; UI configurator server total.
 - 2026-10-28: Этап 6 **готов** — mine/staff lists + status PATCH; StaffCabinet IT; UI вкладки My orders / Staff.
 - 2026-10-28: Этап 7 **готов** — Router pages Cars/Parts/Configure/Orders/Staff; hero + auth shell; e2e smoke на :8080.
+- 2026-10-28: Этап 8 **готов** — AGENTS verification зелёная; Playwright MVP e2e; FEATURE DoD заполнен; F-001 → `готово`.
