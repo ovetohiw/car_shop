@@ -1,62 +1,73 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { type OrderSummary, fetchMyOrders } from './api'
-import type { AuthSession } from './authTypes'
+import { useAuth } from './AuthContext'
+import { formatMoney } from './formatMoney'
 
-function formatMoney(value: number) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value)
-}
-
-type Props = {
-  session: AuthSession | null
-}
-
-export function MyOrdersPage({ session }: Props) {
+export function MyOrdersPage() {
+  const { session } = useAuth()
   const [orders, setOrders] = useState<OrderSummary[]>([])
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!session) {
       setOrders([])
+      setLoading(false)
       return
     }
+    setLoading(true)
     fetchMyOrders(session.token)
-      .then(setOrders)
+      .then((list) => {
+        setOrders(list)
+        setError(null)
+      })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : 'Failed to load orders')
       })
+      .finally(() => setLoading(false))
   }, [session])
 
-  if (!session) {
-    return <p className="text-slate-600">Sign in to see your orders.</p>
-  }
-
-  if (error) {
-    return <p className="text-red-700">{error}</p>
-  }
-
-  if (orders.length === 0) {
-    return <p className="text-slate-600">No orders yet.</p>
-  }
-
   return (
-    <ul className="space-y-3">
-      {orders.map((order) => (
-        <li
-          key={order.id}
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-white/80 px-4 py-3 ring-1 ring-slate-200"
-        >
-          <div>
-            <p className="font-medium text-slate-900">Order #{order.id}</p>
-            <p className="text-sm text-slate-600">{order.status}</p>
-          </div>
-          <p className="font-semibold text-sky-800">
-            {formatMoney(Number(order.totalAmount))}
-          </p>
-        </li>
-      ))}
-    </ul>
+    <div>
+      <header className="page-intro">
+        <h1>My orders</h1>
+        <p>Track every order placed with your customer account.</p>
+      </header>
+
+      {!session ? (
+        <p className="empty-state">Sign in above to see your orders.</p>
+      ) : null}
+      {session && loading ? <p className="loading-state">Loading orders…</p> : null}
+      {error ? <p className="error-state">{error}</p> : null}
+      {session && !loading && !error && orders.length === 0 ? (
+        <p className="empty-state">
+          No orders yet.{' '}
+          <Link to="/configure" style={{ color: 'var(--accent-deep)', fontWeight: 700 }}>
+            Open the configurator
+          </Link>
+          .
+        </p>
+      ) : null}
+
+      {orders.length > 0 ? (
+        <ul className="order-list">
+          {orders.map((order) => (
+            <li key={order.id} className="panel order-row">
+              <div>
+                <h2>Order #{order.id}</h2>
+                <p>{order.status}</p>
+                <p>
+                  Updated {new Date(order.updatedAt).toLocaleString()}
+                </p>
+              </div>
+              <p className="product__price">
+                {formatMoney(Number(order.totalAmount))}
+              </p>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
   )
 }

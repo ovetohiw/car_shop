@@ -64,17 +64,29 @@ vi.mock('./api', () => ({
   createOrder: vi.fn(),
   login: vi.fn(),
   register: vi.fn(),
+  fetchMyOrders: () => Promise.resolve([]),
+  fetchStaffOrders: () => Promise.resolve([]),
+  updateStaffOrderStatus: vi.fn(),
 }))
 
 describe('App', () => {
-  it('shows catalog and can open configurator with server total', async () => {
+  it('shows catalog hero and opens configurator with server total', async () => {
     const user = userEvent.setup()
     render(<App />)
-    expect(screen.getByText('Car Shop')).toBeInTheDocument()
-    expect(await screen.findByText('Aura Sedan')).toBeInTheDocument()
+    expect(screen.getAllByText('Car Shop').length).toBeGreaterThan(0)
+    expect(await screen.findByRole('heading', { name: 'Cars' })).toBeInTheDocument()
+    expect((await screen.findAllByText('Aura Sedan')).length).toBeGreaterThan(0)
 
-    await user.click(screen.getByRole('button', { name: 'Configurator' }))
+    await user.click(screen.getByRole('link', { name: 'Configurator' }))
     expect(await screen.findByText('Server total')).toBeInTheDocument()
     expect(await screen.findByText('$25,090.00')).toBeInTheDocument()
+  })
+
+  it('opens dedicated parts page from navigation', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('link', { name: 'Parts' }))
+    expect(await screen.findByRole('heading', { name: 'Parts' })).toBeInTheDocument()
+    expect(await screen.findByText('Ceramic brake pads')).toBeInTheDocument()
   })
 })

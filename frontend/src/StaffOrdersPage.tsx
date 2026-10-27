@@ -4,7 +4,8 @@ import {
   fetchStaffOrders,
   updateStaffOrderStatus,
 } from './api'
-import type { AuthSession } from './authTypes'
+import { useAuth } from './AuthContext'
+import { formatMoney } from './formatMoney'
 
 const NEXT: Record<string, string[]> = {
   NEW: ['SUBMITTED', 'CANCELLED'],
@@ -14,19 +15,10 @@ const NEXT: Record<string, string[]> = {
   CANCELLED: [],
 }
 
-function formatMoney(value: number) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value)
-}
-
-type Props = {
-  session: AuthSession | null
-}
-
-export function StaffOrdersPage({ session }: Props) {
+export function StaffOrdersPage() {
+  const { session } = useAuth()
   const [orders, setOrders] = useState<OrderSummary[]>([])
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   async function reload(token: string) {
@@ -37,27 +29,25 @@ export function StaffOrdersPage({ session }: Props) {
   useEffect(() => {
     if (!session || session.role !== 'STAFF') {
       setOrders([])
+      setLoading(false)
       return
     }
-    reload(session.token).catch((err: unknown) => {
-      setError(err instanceof Error ? err.message : 'Failed to load staff orders')
-    })
+    setLoading(true)
+    reload(session.token)
+      .then(() => setError(null))
+      .catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : 'Failed to load staff orders')
+      })
+      .finally(() => setLoading(false))
   }, [session])
 
-  if (!session) {
-    return <p className="text-slate-600">Sign in as staff to manage orders.</p>
-  }
-  if (session.role !== 'STAFF') {
-    return <p className="text-slate-600">Staff role required.</p>
-  }
-  if (error) {
-    return <p className="text-red-700">{error}</p>
-  }
-
   async function onAdvance(order: OrderSummary, status: string) {
+    if (!session) {
+      return
+    }
     try {
-      await updateStaffOrderStatus(session!.token, order.id, status)
-      await reload(session!.token)
+      await updateStaffOrderStatus(session.token, order.id, status)
+      await reload(session.token)
       setError(null)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Status update failed')
@@ -65,36 +55,58 @@ export function StaffOrdersPage({ session }: Props) {
   }
 
   return (
-    <ul className="space-y-4">
-      {orders.map((order) => (
-        <li
-          key={order.id}
-          className="rounded-xl bg-white/80 px-4 py-4 ring-1 ring-slate-200"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="font-medium text-slate-900">Order #{order.id}</p>
-              <p className="text-sm text-slate-600">{order.customerEmail}</p>
-              <p className="text-sm text-slate-600">{order.status}</p>
-            </div>
-            <p className="font-semibold text-sky-800">
-              {formatMoney(Number(order.totalAmount))}
-            </p>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {(NEXT[order.status] ?? []).map((status) => (
-              <button
-                key={status}
-                type="button"
-                className="rounded bg-slate-900 px-3 py-1.5 text-xs font-medium text-white"
-                onClick={() => void onAdvance(order, status)}
-              >
-                → {status}
-              </button>
-            ))}
-          </div>
-        </li>
-      ))}
-    </ul>
+    <div>
+      <header className="page-intro">
+        <h1>Staff cabinet</h1>
+        <p>Advance fulfillment statuses for every order in the shop.</p>
+      </header>
+
+      {!session ? (
+        <p className="empty-state">Sign in as staff to manage orders.</p>
+      ) : null}
+      {session && session.role !== 'STAFF' ? (
+        <p className="empty-state">
+          Staff role required. Server still rejects non-staff calls.
+        </p>
+      ) : null}
+      {session?.role === 'STAFF' && loading ? (
+        <p className="loading-state">Loading orders…</p>
+      ) : null}
+      {error ? <p className="error-state">{error}</p> : null}
+      {session?.role === 'STAFF' && !loading && !error && orders.length === 0 ? (
+        <p className="empty-state">No orders yet.</p>
+      ) : null}
+
+      {orders.length > 0 ? (
+        <ul className="order-list">
+          {orders.map((order) => (
+            <li key={order.id} className="panel">
+              <div className="order-row">
+                <div>
+                  <h2>Order #{order.id}</h2>
+                  <p>{order.customerEmail}</p>
+                  <p>{order.status}</p>
+                </div>
+                <p className="product__price">
+                  {formatMoney(Number(order.totalAmount))}
+                </p>
+              </div>
+              <div className="status-actions">
+                {(NEXT[order.status] ?? []).map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    className="btn btn--solid btn--tiny"
+                    onClick={() => void onAdvance(order, status)}
+                  >
+                    → {status}
+                  </button>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
   )
 }

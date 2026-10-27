@@ -56,7 +56,7 @@
 
 ## Текущий шаг
 
-Этап 7: Frontend UI на :8080 (полировка страниц каталога/auth/кабинетов).
+Этап 8: health-check, тесты, доказательства DoD; статус F-001 → `готово`.
 
 ## Лог прогресса
 
@@ -67,3 +67,4 @@
 - 2026-10-28: Этап 4 **готов** — публичный REST каталога; UI рендерит cars/parts; nginx proxy `/api`; CatalogIntegrationTest зелёный.
 - 2026-10-28: Этап 5 **готов** — quote/create order; PriceCalculator unit; claimedTotal mismatch 400; UI configurator server total.
 - 2026-10-28: Этап 6 **готов** — mine/staff lists + status PATCH; StaffCabinet IT; UI вкладки My orders / Staff.
+- 2026-10-28: Этап 7 **готов** — Router pages Cars/Parts/Configure/Orders/Staff; hero + auth shell; e2e smoke на :8080.

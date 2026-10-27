@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   type CarDetail,
   type CarSummary,
@@ -13,20 +14,15 @@ import {
   fetchParts,
   quoteOrder,
 } from './api'
-import type { AuthSession } from './authTypes'
+import { useAuth } from './AuthContext'
+import { formatMoney } from './formatMoney'
 
-function formatMoney(value: number) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value)
-}
+export function ConfiguratorPage() {
+  const { session } = useAuth()
+  const [searchParams] = useSearchParams()
+  const presetCar = Number(searchParams.get('car') ?? '')
+  const presetPart = Number(searchParams.get('part') ?? '')
 
-type Props = {
-  session: AuthSession | null
-}
-
-export function ConfiguratorPage({ session }: Props) {
   const [cars, setCars] = useState<CarSummary[]>([])
   const [carDetail, setCarDetail] = useState<CarDetail | null>(null)
   const [colors, setColors] = useState<ColorOption[]>([])
@@ -51,20 +47,28 @@ export function ConfiguratorPage({ session }: Props) {
         setColors(colorList)
         setExtras(extraList)
         setParts(partList)
-        if (carList[0]) {
-          setCarModelId(carList[0].id)
+        const initialCar =
+          Number.isFinite(presetCar) && carList.some((car) => car.id === presetCar)
+            ? presetCar
+            : carList[0]?.id
+        if (initialCar) {
+          setCarModelId(initialCar)
         }
         if (colorList[0]) {
           setColorId(colorList[0].id)
         }
-        if (partList[0]) {
-          setPartId(partList[0].id)
+        const initialPart =
+          Number.isFinite(presetPart) && partList.some((part) => part.id === presetPart)
+            ? presetPart
+            : partList[0]?.id
+        if (initialPart) {
+          setPartId(initialPart)
         }
       })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : 'Failed to load options')
       })
-  }, [])
+  }, [presetCar, presetPart])
 
   useEffect(() => {
     if (carModelId === '') {
@@ -91,10 +95,7 @@ export function ConfiguratorPage({ session }: Props) {
         colorId,
         extraServiceIds: extraIds,
       },
-      parts:
-        partId === ''
-          ? []
-          : [{ partId, quantity: partQty }],
+      parts: partId === '' ? [] : [{ partId, quantity: partQty }],
     }
   }, [carModelId, trimId, colorId, extraIds, partId, partQty])
 
@@ -129,7 +130,9 @@ export function ConfiguratorPage({ session }: Props) {
     }
     try {
       const order = await createOrder(orderBody, session.token)
-      setMessage(`Order #${order.id} created for ${formatMoney(Number(order.totalAmount))}`)
+      setMessage(
+        `Order #${order.id} created for ${formatMoney(Number(order.totalAmount))}`,
+      )
       setError(null)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Order failed')
@@ -137,12 +140,17 @@ export function ConfiguratorPage({ session }: Props) {
   }
 
   return (
-    <div className="space-y-8">
-      <section className="grid gap-4 md:grid-cols-2">
-        <label className="block text-sm text-slate-700">
+    <div style={{ display: 'grid', gap: '1.25rem' }}>
+      <header className="page-intro">
+        <h1>Configurator</h1>
+        <p>Build a configuration. The total comes only from the server.</p>
+      </header>
+
+      <section className="panel config-grid">
+        <label>
           Car model
           <select
-            className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2"
+            className="field"
             value={carModelId}
             onChange={(event) => setCarModelId(Number(event.target.value))}
           >
@@ -153,10 +161,10 @@ export function ConfiguratorPage({ session }: Props) {
             ))}
           </select>
         </label>
-        <label className="block text-sm text-slate-700">
+        <label>
           Trim
           <select
-            className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2"
+            className="field"
             value={trimId}
             onChange={(event) => setTrimId(Number(event.target.value))}
           >
@@ -167,10 +175,10 @@ export function ConfiguratorPage({ session }: Props) {
             ))}
           </select>
         </label>
-        <label className="block text-sm text-slate-700">
+        <label>
           Color
           <select
-            className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2"
+            className="field"
             value={colorId}
             onChange={(event) => setColorId(Number(event.target.value))}
           >
@@ -181,10 +189,10 @@ export function ConfiguratorPage({ session }: Props) {
             ))}
           </select>
         </label>
-        <label className="block text-sm text-slate-700">
+        <label>
           Part
           <select
-            className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2"
+            className="field"
             value={partId}
             onChange={(event) => setPartId(Number(event.target.value))}
           >
@@ -195,24 +203,26 @@ export function ConfiguratorPage({ session }: Props) {
             ))}
           </select>
         </label>
-        <label className="block text-sm text-slate-700">
+        <label>
           Part quantity
           <input
+            className="field"
             type="number"
             min={1}
-            className="mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2"
             value={partQty}
             onChange={(event) => setPartQty(Number(event.target.value))}
           />
         </label>
       </section>
 
-      <section>
-        <h3 className="text-lg font-medium text-slate-900">Extra services</h3>
-        <ul className="mt-3 space-y-2">
+      <section className="panel">
+        <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '1.1rem' }}>
+          Extra services
+        </h2>
+        <ul className="extras" style={{ marginTop: '0.75rem' }}>
           {extras.map((extra) => (
             <li key={extra.id}>
-              <label className="flex items-center gap-2 text-sm text-slate-700">
+              <label>
                 <input
                   type="checkbox"
                   checked={extraIds.includes(extra.id)}
@@ -225,27 +235,30 @@ export function ConfiguratorPage({ session }: Props) {
         </ul>
       </section>
 
-      <section className="rounded-xl bg-sky-50 px-4 py-5 ring-1 ring-sky-100">
-        <p className="text-sm uppercase tracking-wide text-sky-800">Server total</p>
-        <p className="mt-1 text-3xl font-semibold text-slate-900">
+      <section className="panel total-panel">
+        <p className="eyebrow">Server total</p>
+        <p className="amount">
           {serverTotal == null ? '—' : formatMoney(serverTotal)}
         </p>
-        <p className="mt-2 text-sm text-slate-600">
-          Price is calculated only on the backend. Client totals are ignored or rejected.
+        <p style={{ margin: '0.5rem 0 0', color: 'var(--muted)', fontSize: '0.9rem' }}>
+          Client totals are ignored or rejected.
         </p>
       </section>
 
       <button
         type="button"
-        className="rounded bg-sky-700 px-5 py-3 font-medium text-white disabled:opacity-50"
+        className="btn btn--accent"
         disabled={!session || serverTotal == null}
         onClick={() => void onPlaceOrder()}
       >
         Place order
       </button>
 
-      {message ? <p className="text-sm text-emerald-700">{message}</p> : null}
-      {error ? <p className="text-sm text-red-700">{error}</p> : null}
+      {!session ? (
+        <p className="empty-state">Sign in above to place an order.</p>
+      ) : null}
+      {message ? <p className="form-ok">{message}</p> : null}
+      {error ? <p className="form-error">{error}</p> : null}
     </div>
   )
 }
