@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Pulse Hatch">
+  <defs>
+    <linearGradient id="bg" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff7ed"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <ellipse cx="320" cy="290" rx="210" ry="16" fill="#cbd5e1" opacity="0.7"/>
+  <path d="M110 235c25-60 75-100 145-105h140c50 8 85 40 105 80l50 8c18 3 28 18 26 34H95c-8-18-2-35 15-42z" fill="#c2410c"/>
+  <path d="M220 135h130c40 0 68 22 82 50H195c16-28 40-50 25-50z" fill="#fdba74"/>
+  <circle cx="200" cy="250" r="32" fill="#0f172a"/>
+  <circle cx="200" cy="250" r="13" fill="#94a3b8"/>
+  <circle cx="445" cy="250" r="32" fill="#0f172a"/>
+  <circle cx="445" cy="250" r="13" fill="#94a3b8"/>
+  <text x="320" y="60" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="28" fill="#0f172a">Pulse Hatch</text>
+</svg>

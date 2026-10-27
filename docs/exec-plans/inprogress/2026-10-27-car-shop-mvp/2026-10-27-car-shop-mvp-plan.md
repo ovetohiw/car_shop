@@ -52,13 +52,14 @@
 
 - Maven vs Gradle — **решено: Maven** (`backend/mvnw`)
 - Образ Oracle — **решено: `gvenzl/oracle-xe:21-slim-faststart`**
-- Flyway vs Liquibase — выбрать на этапе 2 (схема БД)
+- Flyway vs Liquibase — **решено: Flyway**
 
 ## Текущий шаг
 
-Этап 2: схема Oracle, JPA/Hibernate, миграции (выбрать Flyway или Liquibase), сиды, картинки каталога.
+Этап 3: Spring Security + JWT (регистрация/логин, роли customer/staff, 401/403).
 
 ## Лог прогресса
 
 - 2026-10-27: Создан exec plan; ТЗ F-001 в статусе `черновик`; стек зафиксирован (Spring Boot, React/Vite, Oracle, Docker Compose).
 - 2026-10-28: Этап 1 **готов** — scaffold `frontend/` + `backend/` + Compose; `docker compose up --build` поднимает 3 сервиса; `/api/health` → UP; F-001 → `в работе`; Maven + `gvenzl/oracle-xe:21-slim-faststart`.
+- 2026-10-28: Этап 2 **готов** — Flyway V1/V2, JPA, сиды; лог `Demo seeds readable: staff=1 cars=3 trims=6 colors=4 extras=3 parts=3`; health UP.

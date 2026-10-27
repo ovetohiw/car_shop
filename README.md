@@ -6,8 +6,10 @@
 
 - Frontend: React + Vite + TypeScript + Tailwind (порт **8080**)
 - Backend: Java 17 + Spring Boot + Maven (порт **8081**)
-- БД: Oracle XE (`gvenzl/oracle-xe:21-slim-faststart`, порт **1521**)
+- БД: Oracle XE (`gvenzl/oracle-xe:21-slim-faststart`, порт **1521**) + Flyway
 - Запуск: Docker Compose
+
+Демо staff (после сидов): `staff@carshop.local` / `StaffDemo1!` — только для локального стенда.
 
 Подробности: [STACK.md](STACK.md), ТЗ: [FEATURE.md](FEATURE.md).
 

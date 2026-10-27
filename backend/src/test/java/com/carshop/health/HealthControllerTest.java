@@ -6,10 +6,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(HealthController.class)
+@WebMvcTest(
+    controllers = HealthController.class,
+    excludeAutoConfiguration = {
+      DataSourceAutoConfiguration.class,
+      HibernateJpaAutoConfiguration.class,
+      FlywayAutoConfiguration.class
+    })
 class HealthControllerTest {
 
   @Autowired

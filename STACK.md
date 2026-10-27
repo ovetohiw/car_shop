@@ -223,6 +223,7 @@
 - API: REST
 - Базы данных: Oracle
 - ORM: Hibernate (Spring Data JPA)
+- Миграции: Flyway (+ `flyway-database-oracle`)
 - Auth: JWT (свой) + Spring Security; роли customer / staff
 - Очереди: —
 - Файлы: Локальная ФС (статика frontend/public или volume; URL в БД)

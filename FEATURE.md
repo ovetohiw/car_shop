@@ -124,7 +124,8 @@
 ### Риски и открытые решения
 
 - Образ Oracle: `gvenzl/oracle-xe:21-slim-faststart` (тяжёлый; cold start долгий; healthcheck + `depends_on` в compose).
-- Backend: Maven (`./mvnw`); миграции (Flyway vs Liquibase) — решение на этапе 2.
+- Backend: Maven (`./mvnw`); миграции: **Flyway**.
+- Демо staff: `staff@carshop.local` / `StaffDemo1!` (только локальный стенд; см. `.env.example`).
 - Большой скоуп одной MVP-фичи; дробить только после DoD или явной смены статуса.
 - Секреты БД и JWT — только `.env` / compose env + `.env.example`, не в этом файле.
 
