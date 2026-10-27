@@ -55,6 +55,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/health").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cars/**", "/api/parts/**").permitAll()
             .requestMatchers("/api/staff/**").hasRole("STAFF")
             .anyRequest().authenticated())
         .exceptionHandling(ex -> ex

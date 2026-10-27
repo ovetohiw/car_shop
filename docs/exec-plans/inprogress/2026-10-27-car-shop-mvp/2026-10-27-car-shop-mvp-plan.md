@@ -56,7 +56,7 @@
 
 ## Текущий шаг
 
-Этап 4: публичный REST каталога авто и запчастей (список/карточка + image URL).
+Этап 5: конфигуратор + создание заказа (серверный расчёт цены, отказ подмены).
 
 ## Лог прогресса
 
@@ -64,3 +64,4 @@
 - 2026-10-28: Этап 1 **готов** — scaffold `frontend/` + `backend/` + Compose; `docker compose up --build` поднимает 3 сервиса; `/api/health` → UP; F-001 → `в работе`; Maven + `gvenzl/oracle-xe:21-slim-faststart`.
 - 2026-10-28: Этап 2 **готов** — Flyway V1/V2, JPA, сиды; лог `Demo seeds readable: staff=1 cars=3 trims=6 colors=4 extras=3 parts=3`; health UP.
 - 2026-10-28: Этап 3 **готов** — JWT register/login; staff ping 200 / anon 401 / customer 403; `./mvnw test` зелёный (AuthIntegrationTest + JwtServiceTest).
+- 2026-10-28: Этап 4 **готов** — публичный REST каталога; UI рендерит cars/parts; nginx proxy `/api`; CatalogIntegrationTest зелёный.

@@ -13,6 +13,8 @@
 
 Auth API: `POST /api/auth/register`, `POST /api/auth/login` → JWT (`Authorization: Bearer …`). Staff probe: `GET /api/staff/ping`.
 
+Catalog API (public): `GET /api/cars`, `GET /api/cars/{id}`, `GET /api/parts`, `GET /api/parts/{id}`. UI on :8080 proxies `/api` to backend.
+
 Подробности: [STACK.md](STACK.md), ТЗ: [FEATURE.md](FEATURE.md).
 
 ## Быстрый старт
