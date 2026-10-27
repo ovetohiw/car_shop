@@ -1,6 +1,8 @@
 ## Описание проекта
 
+- Онлайн-магазин продажи автомобилей и запчастей: каталог с фото, конфигуратор заказа, auth (customer/staff), кабинет заказов и эмуляция исполнения.
 - Стэк: STACK.md.
+- Порты стенда: frontend 8080, backend 8081, Oracle 1521.
 
 ## Стартовый воркфлоу
 
@@ -13,16 +15,16 @@
 
 ## Тест работоспособности приложения
 
-- Поднять приложение: ;
-- Прогнать тесты: ;
-- Верификация: .
+- Поднять приложение: `docker compose up --build` (UI http://localhost:8080, API http://localhost:8081, Oracle :1521).
+- Прогнать тесты: backend — `cd backend && ./mvnw test`; frontend — `cd frontend && pnpm test` и `cd frontend && pnpm test:e2e`.
+- Верификация: `docker compose ps` (сервисы healthy) && `curl http://localhost:8081/api/health` && прогон тестов выше.
 
-## Defenition of Done
+## Definition of Done
 
 - Фича действительно реализована;
 - Проверка фичи сквозными тестами;
 - Отсутствие ошибок;
-- helth-check;
+- health-check;
 - Доказательство зафиксированно в FEATURE.md.
 
 ## Рабочие правила
